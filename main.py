@@ -16,7 +16,7 @@ def about():
 
 
 # Users Route
-@app.get("/users")
+@app.get("/GETusers")
 def users():
     return {
         "users": ["Priyanka", "Chanchal", "Shivani", "Pari"]
@@ -24,8 +24,24 @@ def users():
 
 
 # Path Parameter
-@app.get("/users/{user_id}")
+@app.get("/usersID/{user_id}")
 def get_user(user_id: int):
     return {
         "user_id": user_id
+    }
+
+# Query Parameter
+@app.get("/Users")
+def get_user(name:str = None):
+    return {"Name":name}
+
+@app.get("/products")
+def get_user(limit: int = 10):
+    return {"limit": limit}
+
+@app.get("items")
+def get_users(name: str = None, price: int=0):
+    return {
+        "name":name,
+        "price":price
     }
