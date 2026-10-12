@@ -3,72 +3,54 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-class User(BaseModel):
-    name: str
-    age: int
-    email: str
+todos = []
 
-# Home Route
-@app.get("/")
-def home():
-    return {"message": "Welcome to FastAPI"}
+class Todo(BaseModel):
+    id: int
+    title: str
+    completed: bool
 
-
-# About Route
-@app.get("/about")
-def about():
-    return {"message": "This is about page"}
-
-
-# Users Route
-@app.get("/GETusers")
-def users():
+# Create API
+@app.post("/todos")
+def create_todo(todo: Todo):
+    todos.append(todo)
     return {
-        "users": ["Priyanka", "Chanchal", "Shivani", "Pari"]
-    }
+        "message": "TODO added",
+        "data": todo
+    }    
+# read API- read data complete
+@app.get("/todos")
+def get_todos():
+    return todos
+
+# based on id/single parameter
+@app.get("/todos/{todo_id}")
+def get_todo(todo_id: int):
+    for todo in todos:
+        if todo.id == todo_id:
+            return todo
+    return {"error":"Todo not found"}    
+
+# PUT API
+@app.put("/todos/{todo_id}")
+def update_todo(todo_id: int, updated_todo:Todo):
+    for index, todo in enumerate(todos):
+        if todo.id == todo_id:
+            todos[index] = update_todo
+            return {
+                "message":"Data Updated",
+                "data": update_todo
+            }
+    return {"error":"Todo not found"}    
 
 
-# Path Parameter
-@app.get("/usersID/{user_id}")
-def get_user(user_id: int):
-    return {
-        "user_id": user_id
-    }
-
-# Query Parameter
-@app.get("/Users")
-def get_user(name:str = None):
-    return {"Name":name}
-
-@app.get("/products")
-def get_user(limit: int = 10):
-    return {"limit": limit}
-
-@app.get("items")
-def get_users(name: str = None, price: int=0):
-    return {
-        "name":name,
-        "price":price
-    }
-
-#Request body & POST request
-@app.post("/create-user")
-def create_user(user: User):
-    return {
-        "message": "User Created",
-        "data": user
-    }
-
-
-class Address(BaseModel):
-    city: str
-    pincode: int
-
-class User(BaseModel):
-    name: str
-    age: int
-    address: Address    
-
-@app.post("/create_user")
-def create_user(user: User):
-    return user    
+# DELETE API
+@app.delete("/todos/{todo_id}")
+def delete_todo(todo_id:int):
+    for index, todo in enumerate(todos):
+        if todo.id == todo_id:
+            todos.pop(index)
+            return {
+                "message": "Data Deleted"
+            }
+    return {"error":"Todo not found"}    
