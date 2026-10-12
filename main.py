@@ -6,6 +6,8 @@ app = FastAPI()
 class User(BaseModel):
     name: str
     age: int
+    email: str
+
 # Home Route
 @app.get("/")
 def home():
@@ -51,8 +53,22 @@ def get_users(name: str = None, price: int=0):
 
 #Request body & POST request
 @app.post("/create-user")
-def create_user(user: dict):
+def create_user(user: User):
     return {
         "message": "User Created",
         "data": user
     }
+
+
+class Address(BaseModel):
+    city: str
+    pincode: int
+
+class User(BaseModel):
+    name: str
+    age: int
+    address: Address    
+
+@app.post("/create_user")
+def create_user(user: User):
+    return user    
